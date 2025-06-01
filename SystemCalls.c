@@ -9,6 +9,11 @@
 
 void File_Manipulator()
 {
+	// This function provides a simple file manipulation interface for the user.
+// It allows the user to open a file in read, write, or create mode, and then
+// either read from or write to the file based on user input.
+// Parameters: None
+// Return Value: None (void)
 	char *poison = (char *)malloc(100 * sizeof(char)); // allocate memory for file name
 	int how_open, file_descriptor, decision;
 	char buffer[4096]; // its a temporary storage area to hold data while transfering  between processes,files or devices
@@ -22,8 +27,8 @@ void File_Manipulator()
 	printf("What file is your poison?\n");
 	scanf("%99s", poison);
 
-	// Select teh file open mode
-	printf("How do you wan to open the file?\n1.Read Only\n2.Write Only\n3.Create New File\n");
+	// Select the file open mode
+	printf("How do you want to open the file?\n1.Read Only\n2.Write Only\n3.Create New File\n");
 	scanf("%d", &how_open);
 
 	if (how_open == 1)
@@ -60,8 +65,15 @@ void File_Manipulator()
 		//-1 : error in reading 0 : end of file
 		if (bytes_read > 0)
 		{
-			buffer[bytes_read] = '\0'; // Null terminate to prevent additional characters during printing
+			if (bytes_read < sizeof(buffer))
+				buffer[bytes_read] = '\0'; // Null terminate to prevent additional characters during printing
+			else
+				buffer[sizeof(buffer) - 1] = '\0'; // Ensure null-termination
 			printf("File contents:\n%s\n", buffer);
+		}
+		else if (bytes_read == 0)
+		{
+			printf("File is empty.\n");
 		}
 		else
 		{
@@ -84,30 +96,37 @@ void File_Manipulator()
 			printf("No valid input provided\n");
 		}
 	}
-	else
-	{
-		printf("Wrong Input Bruvv!!\n");
-	}
-	close(file_descriptor); // always close the file
-	free(poison);			// free allocated memory
+	close(file_descriptor);
+	free(poison);
 }
 
 void Executor()
 {
+	// This function prompts the user for the name of an executable file and attempts
+// to execute it using execl(). It replaces the current process image with the new program.
+// Parameters: None
+// Return Value: None (void)
 	char executable[256];
 
 	// get the name of the executable
 	printf("Your wish is my command...!What can I execute\n");
 	scanf("%255s", executable);
 
-	// execute the executable
-	// the exec() cannot be used directly
-	// The last argument must be NULL and at least 2 arguments are needed
-	execl(executable, executable, (char *)NULL);
+	pid_t pid = fork();
+	if (pid == -1) {
+		perror("fork failed");
+		return;
+	} else if (pid == 0) {
+		// Child process
+	
+	}
 }
-
 void Process_Management()
 {
+	// This function demonstrates basic process management by printing the current
+// process ID and creating a child process using fork().
+// Parameters: None
+// Return Value: None (void)
 	int Parent_Process = getpid();
 	int child_process;
 	// checking the PID of the current running process
@@ -121,6 +140,10 @@ void Process_Management()
 
 void Terminal()
 {
+	// This function retrieves and displays the size of the terminal window (rows and columns)
+// using the ioctl() system call.
+// Parameters: None
+// Return Value: None (void)
 	// getting the terminal size
 	// ioctl expects a pointer to a structure to store the terminal size information
 	struct winsize w;
@@ -130,6 +153,10 @@ void Terminal()
 
 void System_Properties()
 {
+	// This function retrieves and displays system information such as system name,
+// node name, release, version, and machine type using uname().
+// Parameters: None
+// Return Value: None (void)
 	// getting the system properties
 	struct utsname System_Information;
 	if (uname(&System_Information) == 0)
