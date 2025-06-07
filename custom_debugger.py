@@ -1,6 +1,9 @@
-#Before setting breakpoints, or inspecting memory, we need to attach the debugger to a running process.
-import psutil #used to interact with system processes
-import ptrace.debugger #used to attach to processes and manipulate them
+import psutil 
+import ptrace.debugger 
+import ctypes
+import struct
+import os
+import sys
 
 #list all running processes
 for proc in psutil.process_iter(['pid', 'name']):# iterate over all processes on the system and returns the PID and name only 
@@ -11,3 +14,40 @@ for proc in psutil.process_iter(['pid', 'name']):# iterate over all processes on
 # Attach to a process by PID
 pid = int(input("Enter the PID of the process to attach to: "))
 debugger = ptrace.debugger.PtraceDebugger() 
+
+#step 2 : Reading Proceses and Registers
+libc = ctypes.CDLL("libc.so.6")
+
+class UserRegStruct(ctypes.Structure):
+    _fields_ = [
+        ("r15", ctypes.c_ulonglong),
+        ("r14", ctypes.c_ulonglong),
+        ("r13", ctypes.c_ulonglong),
+        ("r12", ctypes.c_ulonglong),
+        ("rbp", ctypes.c_ulonglong),
+        ("rbx", ctypes.c_ulonglong),
+        ("r11", ctypes.c_ulonglong),
+        ("r10", ctypes.c_ulonglong),
+        ("r9", ctypes.c_ulonglong),
+        ("r8", ctypes.c_ulonglong),
+        ("rax", ctypes.c_ulonglong),
+        ("rcx", ctypes.c_ulonglong),
+        ("rdx", ctypes.c_ulonglong),
+        ("rsi", ctypes.c_ulonglong),
+        ("rdi", ctypes.c_ulonglong),
+        ("orig_rax", ctypes.c_ulonglong),
+        ("rip", ctypes.c_ulonglong),
+        ("cs", ctypes.c_uint16),
+        ("eflags", ctypes.c_uint16),
+        ("rsp", ctypes.c_ulonglong),
+        ("ss", ctypes.c_uint16)
+    ]
+def get_registers(pid):
+    regs = UserRegStruct()
+    libc.ptrace(12, pid, None, ctypes.byref(regs))
+    return regs
+if __name__ == "__main__":
+    regs = get_registers(pid)
+    print(f"Registers for PID {pid}:")
+for field in regs._fields_:
+    print(f"{field[0]}: {getattr(regs, field[0])}")
