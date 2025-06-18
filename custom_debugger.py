@@ -1,9 +1,26 @@
 import psutil 
 import ptrace.debugger 
 import ctypes
+import ctypes.util
 import struct
 import os
 import sys
+import signal
+
+#constants from sys/ptrace.h
+PTRACE_SINGLESTEP = 9
+PTRACE_CONT = 7
+PTRACE_ATTACH = 16
+PTRACE_DETACH = 17
+PTRACE_PEEKUSER = 3
+PTRACE_POKUSER = 4
+
+libc = ctypes.CDLL(ctypes.util.find_library('c'))
+
+def single_step(pid):
+    libc.ptrace(PTRACE_SINGLESTEP, pid, 0, 0)
+    os.waitpid(pid, 0)
+
 
 #Making the debugger cross-platform
 class Debugger:
