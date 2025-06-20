@@ -6,7 +6,24 @@ import struct
 import os
 import sys
 import signal
+#The script loader
+class ScriptLoader:
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.lines = []
+    
+    def load_script(self):
+        if not os.path.exists(self.filepath):
+            raise FileNotFoundError(f"Script file {self.filepath} not found.")
+        
+        with open(self.filepath, 'r') as file:
+            self.lines = file.readlines()
+        print(f"Script loaded from {self.filepath}")
 
+    def preview(self, num_lines=5):
+        print(f"\nPreviewing first {num_lines} lines of the script:")
+        for i, line in enumerate(self.lines[:num_lines] ,1):
+            print(f"{i:03}: {line.strip()}")
 #constants from sys/ptrace.h
 PTRACE_SINGLESTEP = 9
 PTRACE_CONT = 7
