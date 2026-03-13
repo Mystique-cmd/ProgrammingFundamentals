@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en-KE"> <!-- static locale declaration to Kenyan English -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Aware Template</title>
+</head>
+<body>
+    <h1>Welcome to the Local Aware Template</h1>
+    <p>This template is tailored for users in Kenya.</p>
+<script>
+    const userLang = navigator.language || navigator.userLanguage;
+    document.documentElement.lang = userLang;
+</script>
+</body>
+</html>

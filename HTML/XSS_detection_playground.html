@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>XSS Detection Playground</title>
+        <style>
+            body {
+                font-family: monospace;
+                padding: 20px;
+            }
+            textarea,div {
+                margin-top: 10px;
+                width: 100%;
+            }
+            #unSafeOutput, #safeOutput {
+                border: 1px solid #ccc;
+                padding: 10px;
+                min-height: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>🧪 XSS Detection Playground</h2>
+        <textarea id="userInput" rows="5" placeholder="Type some HTML or JS code..."></textarea>
+        <button id="runBtn">Inject and Detect</button>
+
+        <h3>🔓 Raw Injection Output (unsafe)</h3>
+        <div id="unSafeOutput"></div>
+
+        <h3>🔐 Sanitized Output</h3>
+        <div id="unSafeOutput"></div>
+    </body>
+</html>
