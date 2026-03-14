@@ -1,0 +1,8 @@
+from Crypto.Cipher import AES
+import os
+
+key = os.urandom(16) #generate a random 16-byte key
+cipher = AES.new( key, AES.MODE_EAX )
+ciphertext, tag = cipher.encrypt_and_digest(input("Enter Your Text Here :").encode())
+print ( " Encyrpted Text :", ciphertext.hex()) #output the Hex format 
+
